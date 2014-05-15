@@ -1,6 +1,6 @@
 /**
  * Function: latest_youtube
- * Description: Pulls latest youtube video. 
+ * Description: Pulls latest youtube video. It needs to be added in WordPress Theme function file.
  * @uses [latestyoutube channel="your_channel"]
  * @param <string>
  * @return <string>
