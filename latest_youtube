@@ -1,0 +1,41 @@
+/**
+ * Function: latest_youtube
+ * Description: Pulls latest youtube video. 
+ * @uses [latestyoutube channel="your_channel"]
+ * @param <string>
+ * @return <string>
+ */
+
+function latest_youtube ($atts) {
+
+	extract( shortcode_atts( array(
+		'channel' => 'your_channel'
+	), $atts ) );
+
+	// error_reporting(E_ALL);
+
+	$feedURL = 'http://gdata.youtube.com/feeds/api/users/' . $channel . '/uploads?max-results=20';
+	$sxml = simplexml_load_file($feedURL);
+	$i = 0;
+	foreach ($sxml->entry as $entry) {
+		$media = $entry->children('media', true);
+		$url = (string)$media->group->player->attributes()->url;
+		$index = strrpos($url, "&");
+		$url = substr($url, 0, $index);
+		$index = strrpos($url, "watch");
+		$url = substr($url, 0, $index) . "v/" . substr($url, $index + 8, strlen($url) - ($index + 8));
+
+		$latest_youtube .= '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" width="400" height="250"';
+		$latest_youtube .= 'codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0">';
+		$latest_youtube .= '<param name="allowFullScreen" value="true" /><param name="allowscriptaccess" value="always" />';
+		$latest_youtube .= '<param name="src" value="' . $url . '" /><param name="allowfullscreen" value="true" />';
+		$latest_youtube .= '<embed type="application/x-shockwave-flash" width="400" height="250" src="' . $url . '"';
+		$latest_youtube .= 'allowscriptaccess="always" allowfullscreen="true"></embed>';
+		$latest_youtube .= '</object>';
+
+		return $latest_youtube;
+		break;
+	}
+}
+
+add_shortcode( 'latestyoutube', 'latest_youtube' );
